@@ -1,10 +1,13 @@
-﻿@model IList<ItemPedido>;
+﻿@model CarrinhoViewModel;
 @{
     ViewData["title"] = "Carrinho";
 }
 
 
 <h3>Meu Carrinho</h3>
+
+<form asp-action="carrinho" method="post"></form>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
@@ -26,9 +29,9 @@
     </div>
     <div class="panel-body">
         @{
-            foreach (var item in Model)
+            foreach (var item in Model.Itens)
             {
-                <div class="row row-center linha-produto">
+                <div class="row row-center linha-produto" item-id="@(item.Id)">
                     <div class="col-md-3">
                         <img class="img-produto-carrinho" src="/images/produtos/large_@(item.Produto.Codigo).jpg" />
                     </div>
@@ -37,14 +40,14 @@
                     <div class="col-md-2 text-center">
                         <div class="input-group">
                             <span class="input-group-btn">
-                                <button class="btn btn-default">
+                                <button class="btn btn-default" onclick="carrinho.clickDecremento(this)">
                                     <span class="glyphicon-minus"></span>
                                 </button>
                             </span>
                             <input type="text" value="@(item.Quantidade)"
-                                   class="form-control text-center" />
+                                   class="form-control text-center" onblur="carrinho.inputUpdateQuantidade(this)" />
                             <span class="input-group-btn">
-                                <button class="btn btn-default">
+                                <button class="btn btn-default" onclick="carrinho.clickIncremento(this)">
                                     <span class="glyphicon-plus"></span>
                                 </button>
                             </span>
@@ -63,14 +66,14 @@
         <div class="row">
             <div class="col-md-10">
                 <span numero-itens>
-                    Total: @(Model.Count())
+                    Total: @(Model.Itens.Count())
                     itens
                 </span>
             </div>
             <div class="col-md-2">
                 Total: R$ <span class="pull-right" total>
                     @{
-                        @Model.Sum(item => item.PrecoUnitario * item.Quantidade).ToString()
+                        @Model.Total
                     }
                 </span>
             </div>
@@ -89,3 +92,7 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script src="~/js/carrinho.js"></script>
+}

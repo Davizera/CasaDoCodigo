@@ -1,4 +1,6 @@
 ﻿using CasaDoCodigo.Models;
+using System;
+using System.Linq;
 
 namespace CasaDoCodigo.Repositories
 {
@@ -6,6 +8,18 @@ namespace CasaDoCodigo.Repositories
     {
         public CadastroRepository(AplicationContext context) : base(context)
         {
+        }
+
+        public Cadastro Update(int cadastroId, Cadastro novoCadastro)
+        {
+            var cadastroDB = dbSet.Where(cad => cad.Id == cadastroId).SingleOrDefault();
+            if (cadastroDB == null)
+            {
+                throw new ArgumentException("cadastroId");
+            }
+            cadastroDB.Update(novoCadastro);
+            context.SaveChanges();
+            return cadastroDB;
         }
     }
 }
